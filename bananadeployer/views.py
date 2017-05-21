@@ -1,10 +1,10 @@
-from commands import deploy_backwards
-from commands import deploy_code
-from commands import get_commit_list
-from commands import get_server_status
+from .commands import deploy_backwards
+from .commands import deploy_code
+from .commands import get_commit_list
+from .commands import get_server_status
 
-from commands import stop_webserver
-from commands import was_deployment_successful
+from .commands import stop_webserver
+from .commands import was_deployment_successful
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from settings import SERVERS, WEB_URL
@@ -32,10 +32,10 @@ def get_status():
             errors.append('current branch on %s(%s) differs from the one in settings(%s)'%(k, status[k]['branch'], v['branch_name']))
 
     # TODO: that's not awesome
-    current = status.values()[0]
+    current = list(status.values())[0]
     primary_server = SERVERS['web'][0]
 
-    branch_head = set([v['branch']+v['head'] for k,v in status.iteritems()])
+    branch_head = set([v['branch']+v['head'] for k,v in status.items()])
     status_in_sync = True if len(branch_head)<=1 else False
 
     if not status_in_sync:
@@ -44,7 +44,7 @@ def get_status():
     old_commits = []
     new_commits = []
     current_commit = None
-    commit_list = get_commit_list(primary_server[1], status.values()[0]['branch'])
+    commit_list = get_commit_list(primary_server[1], list(status.values())[0]['branch'])
 
     for c in commit_list:
         if c[0] != current['head'] and current_commit is None:

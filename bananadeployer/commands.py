@@ -13,13 +13,13 @@ import bananalog
 def exec_command(server, command, **kwargs):
     FAB_FILE = '%s/bananadeployer/fabric/fabfile.py'%PROJECT_ROOT
     command_args = ''
-    for k,v in kwargs.iteritems():
+    for k,v in kwargs.items():
         if not v:
             raise Exception("value for argument '%s' must be provided '\
                                 'when calling %s"%(k, command))
 
     command_with_args = command
-    command_args = ','.join(['%s=%s'%(k,v) for k,v in kwargs.iteritems()])
+    command_args = ','.join(['%s=%s'%(k,v) for k,v in kwargs.items()])
     if command_args:
         command_with_args = "%s:%s"%(command, command_args)
 
@@ -36,7 +36,7 @@ def exec_command(server, command, **kwargs):
     }
 
     cmd = str(cmd)
-    print cmd
+    print(cmd)
     cmd_call = shlex.split(cmd)
     # get the output
     full_output = subprocess.Popen(cmd_call,stdout=subprocess.PIPE,
@@ -63,7 +63,7 @@ def get_commit_list(server, branch_name):
     raw_log = exec_command(server, 'get_remote_log',
                         branch_name=branch_name, code_dir=server['path'])
     raw_list = raw_log.split('commit ')
-    raw_list = filter(lambda x: x, raw_list) # remove empty
+    raw_list = [x for x in raw_list if x] # remove empty
     list = [tuple(x.split('\n', 1)) for x in raw_list if x]
     return list
 
